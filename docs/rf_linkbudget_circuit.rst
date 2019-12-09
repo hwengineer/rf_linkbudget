@@ -180,7 +180,7 @@ But be aware this script only extracts the S21 values.
 .. automethod:: rf_linkbudget.genericTwoPort.fromSParamFile
 
 The parameter patchString is a little bit odd. The author of the scikit-rf project which implements the touchstone importer actually only knows the generic n-port touchstone file format.
-The S2P touchstone format does arange the columns differently, thats why we need for extracting the S21 data of a S2P file the column "S12" which is at the same position for a n-port toucstone format as for the S21 values in an S2P touchstone file
+The S2P touchstone format does arange the columns differently, thats why we need for extracting the S21 data of a S2P file the column "S12" which is at the same position for a n-port touchstone format as for the S21 values in an S2P touchstone file
 
 Source
 ^^^^^^^^^^^^^^
@@ -250,7 +250,7 @@ Attenuator
 ^^^^^^^^^^^^^^
 
 An attenuator is also a classical two port device.
-It can be static or defined with a range it can also be variable.
+It can be static or variable, defined by a range.
 
 .. code-block:: python
     :linenos:
@@ -335,7 +335,7 @@ Mixer
                        OIP3=30)
 
 The single-sideband noisefigure is equal to the insertion loss of the mixer.
-We will ad the other sideband noise in the callback function
+We will add the sideband-noise in the callback function
 
 As we will see there is the therm : `(10**(Att/10) * rf.RFMath.T0 - rf.RFMath.T0)` which adds the sideband noise term.
 In this case the sideband-noise is suppressed down to the noisefloor and will add 3dB noisefigure. We can also simulate the influence of higher sideband noise the same way.

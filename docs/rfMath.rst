@@ -29,7 +29,7 @@ Noise Temperature / Noise Figure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The noise parameter are internally calculated as noise-temperature.
-All other noise parameter are converter from the noise-temperature to their value.
+All other noise parameter are converter from the noise-temperature to their scale.
 
 .. automethod:: rf_linkbudget.RFMath.convert_T_n
 
@@ -39,7 +39,7 @@ All other noise parameter are converter from the noise-temperature to their valu
 Output Power
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The output power is simpli the input power multiplied by the gain
+The output power is simply the input power multiplied by the gain
 
 P1dB
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

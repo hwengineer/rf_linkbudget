@@ -36,7 +36,7 @@ To have an optimal system means we have to optimize the circuit in a way, so tha
 SNR / SFDR optimisation
 ------------------------
 
-To optimize the SNR / SFDR we have to keep the signal power of each component in the eye.
+To optimize the SNR / SFDR we have to keep the signal power of each component in view.
 
 .. plot:: code/example8.py
 

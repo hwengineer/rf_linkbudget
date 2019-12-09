@@ -15,7 +15,7 @@ and comparing LinkBudget's of RF Ciruits.
 It calculates key parameter's like cumulative Noise Figure, cumulates Gain, Intermodulation Signal Amplitudes
 and so on.
 
-Something I often saw was that RF Designer use excel tables for calculate the link budget.
+Something I often saw was that RF Designer use excel tables for calculating the link budget.
 For simple circuits without switches and configurable attenuators that works okay.
 But when you have switches which will add or remove an LNA in a signal chain depending on the power level at the input of a specific device, it gets complicated.
 You can add this to an excel table but you end up in "if-else" formula hell...

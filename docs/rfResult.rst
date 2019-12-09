@@ -40,7 +40,7 @@ But it blocks the current instance. Thats why we always set this command to the 
 .. plot:: code/example1.py
 
 Here we see a simple plot. a so called `sim.plot_chain()`.
-A chained, because we see all the components in a chain signal chain after each other.
+"chained" because we see all the components in a signal chain, device after device.
 We see on the right side also some text information:
 
 - `p`
@@ -48,7 +48,7 @@ We see on the right side also some text information:
 - -50.0dBm
 
 the p is the current viewed variable, the middle is the current active frequency and the last one the current input power level.
-On some plots these items are clickable and will change when clicked or the mouseweel is getting triggered.
+On some plots these items are clickable and will change when clicked or the mouseweel is used.
 
 We will see more infos in a second.
 
@@ -63,7 +63,7 @@ plot_chain
 
 As we already saw, one of the plotting commands is called **plot_chain**.
 With this plot we see all the data-chain at a specific input frequency and at a specific power.
-This is a good view to analyse a system by scrolling through all the states and obserse the hole componente chain.
+This is a good view to analyse a system by scrolling through all the states and observe the hole component chain.
 
 .. automethod:: rf_linkbudget.simResult.plot_chain
 
@@ -84,14 +84,14 @@ plot_total_simple
 
 Whereas the plot_total is an interactive window with clickable buttons, this **plot_total_simple** is static, more simplistic but gives the possibility to compare two different systems with each other.
 
-For many RF application this plot together with the valies 'SNR' and 'SFDR' resp. 'Dynamic' is a very informative plot to see where we loose SNR or Dynamic and vice versa where we got a sweetspot for both parameters.
+For many RF application this plot together with the values 'SNR' and 'SFDR' resp. 'Dynamic' is a very informative plot to see where we loose SNR or Dynamic and vice versa where we got a sweetspot for both parameters.
 
 .. automethod:: rf_linkbudget.simResult.plot_total_simple
 
 plot_surface
 ^^^^^^^^^^^^
 
-The **plot_surface** is used as a hole view to see the system at all input frequencies versuch all input power levels at the same time.
+The **plot_surface** is used as a hole view to see the system at all input frequencies versus all input power levels at the same time.
 
 .. automethod:: rf_linkbudget.simResult.plot_surface
 
