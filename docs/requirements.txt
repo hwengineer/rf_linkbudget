@@ -6,5 +6,4 @@ rf-linkbudget
 numpy
 pandas
 scipy
-unittest
 networkx
