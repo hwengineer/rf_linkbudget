@@ -20,10 +20,4 @@ formats: all
 python:
   version: 3.5
   install:
-    - method: pip
-    path: .
-    extra_requirements:
-        - matplotlib
-    - method: setuptools
-  system_packages: true
-#    - requirements: docs/requirements.txt
+    - requirements: docs/requirements.txt
