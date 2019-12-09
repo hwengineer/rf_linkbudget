@@ -1,4 +1,4 @@
-# rf_linkbudget
+# rf-linkbudget
 
 <!-- https://packaging.python.org/tutorials/packaging-projects/ -->
 
