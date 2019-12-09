@@ -1,3 +1,10 @@
 sphinx
 sphinx_rtd_theme
 matplotlib
+ipython
+rf-linkbudget
+numpy
+pandas
+scipy
+unittest
+networkx
