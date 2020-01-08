@@ -439,7 +439,7 @@ class AbstractDevice:
     @abstractmethod
     def calcCurrentEdge(self, start, end, data):
         """
-        Abstract Function for calculation of the ouput data values
+        Abstract Function for calculation of the output data values
 
         Parameters
         ----------
@@ -599,7 +599,7 @@ class genericTwoPort(AbstractDevice):
 
     def calcCurrentEdge(self, start, end, data):
         """
-        | calculates the ouput data values of a two port device
+        | calculates the output data values of a two port device
         | only the following values have to calculated inside this function:
 
             - f out
@@ -921,7 +921,7 @@ class SPDT(AbstractDevice):
 
     def calcCurrentEdge(self, start, end, data):
         """
-        | calculates the ouput data values of an spdt device
+        | calculates the output data values of an spdt device
         | only the following values have to calculated inside this function:
 
             - f out
@@ -1006,7 +1006,7 @@ class Mixer(genericTwoPort):
 
     def calcCurrentEdge(self, start, end, data):
         """
-        | calculates the ouput data values of an spdt device
+        | calculates the output data values of an spdt device
         | only the following values have to calculated inside this function:
 
             - f out
