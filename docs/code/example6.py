@@ -33,8 +33,8 @@ def example():
     att_fix = rf.Attenuator("Att Fix1",
                             Att=[1.5])
 
-    rxfilt = rf.Attenuator("Rx Filter",
-                           Att=[2.0])
+    rxfilt = rf.Filter("Rx Filter",
+                       Att=[(0, 2.0)])
 
     att_fix2 = rf.Attenuator("Att Fix2",
                              Att=[1.5])

@@ -10,6 +10,9 @@ It calculates key parameter’s like cumulative Noise Figure, cumulates Gain, In
 
 ## Changelog
 
+# 1.1.1
+Updated examples with `Filter` component
+
 # 1.1.0
 Changed Attenuator OIP3 to IIP3 value.
 This change breaks old scripts!
