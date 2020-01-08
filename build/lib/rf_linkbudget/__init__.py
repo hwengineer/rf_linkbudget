@@ -11,6 +11,7 @@ from .circuit import Sink
 
 from .circuit import Amplifier
 from .circuit import Attenuator
+from .circuit import Filter
 from .circuit import SPDT
 from .circuit import Mixer
 #from .circuit import ADC

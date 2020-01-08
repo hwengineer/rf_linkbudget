@@ -439,7 +439,7 @@ class AbstractDevice:
     @abstractmethod
     def calcCurrentEdge(self, start, end, data):
         """
-        Abstract Function for calculation of the ouput data values
+        Abstract Function for calculation of the output data values
 
         Parameters
         ----------
@@ -530,7 +530,7 @@ class genericTwoPort(AbstractDevice):
         device name
     Gain : list of [f, Gain]
         Gain representation in [dB], frequency in [Hz]
-    Tn : list of [Tn @ Port 1, Tn @ Port 2]
+    Tn : list of [Tn @ Port 1, Tn @ Port 2] : Tn np.float or list of [f, Tn]
         noisetemperature of object, represented at the "target" port [°K]
     P1 : list of [P1 @ Port 1, P1 @ Port 2]
         Signal Compression Point of object, represented at the "target" port in [dB]
@@ -593,13 +593,13 @@ class genericTwoPort(AbstractDevice):
         sparam = rf.touchstone.Touchstone(filename)
         sparam = sparam.get_sparameter_data(format='db')
 
-        Gain = [[f, [s21]] for f, s21 in zip(sparam['frequency'], sparam[patchString])]
+        Gain = [(f, s21) for f, s21 in zip(sparam['frequency'], sparam[patchString])]
 
         return cls(name, Gain=Gain, Tn=Tn, P1=P1, IP3=IP3)
 
     def calcCurrentEdge(self, start, end, data):
         """
-        | calculates the ouput data values of a two port device
+        | calculates the output data values of a two port device
         | only the following values have to calculated inside this function:
 
             - f out
@@ -627,17 +627,47 @@ class genericTwoPort(AbstractDevice):
 
         if start == self.ports[0] and end == self.ports[1]:
 
-            Gain = np.interp(data['f'], *zip(*self.Gain))                 # interpolate Gain value
+            # Gain = np.interp(data['f'], *zip(*self.Gain))                 # interpolate Gain value
+            Gain = self.interpolateIfListOfFreqValTuple(data['f'], self.Gain)
+            Tn = self.interpolateIfListOfFreqValTuple(data['f'], self.Tn[1])
+            P1 = self.interpolateIfListOfFreqValTuple(data['f'], self.P1[1])
+            IP3 = self.interpolateIfListOfFreqValTuple(data['f'], self.IP3[1])
+
             out['Gain'] = data['Gain'] + Gain                             # calc cumulative Gain
-            out['Tn'] = RFMath.calc_Tn(data['Tn'], self.Tn[1], Gain)      # calc output NoiseTemperature
+            out['Tn'] = RFMath.calc_Tn(data['Tn'], Tn, Gain)              # calc output NoiseTemperature
             out['p'] = RFMath.calc_Pout(data['p'], Gain)                  # calc output signal power
-            out['P1'] = RFMath.calc_P1(data['P1'], self.P1[1], Gain)      # calc output P1dB point
-            out['IP3'] = RFMath.calc_IP3(data['IP3'], self.IP3[1], Gain)  # calc output IP3 point (simple)
+            out['P1'] = RFMath.calc_P1(data['P1'], P1, Gain)              # calc output P1dB point
+            out['IP3'] = RFMath.calc_IP3(data['IP3'], IP3, Gain)          # calc output IP3 point (simple)
             # calc other values...
             return out
 
         else:
             raise ValueError('this should not happen')
+
+    def interpolateIfListOfFreqValTuple(self, freq, value):
+        """
+        if value is of the form: [(f,val)] then interpolate, otherwise ignore this function
+
+        Parameters
+        ----------
+        freq : np.float
+            frequency of interest
+        value : float, or [(f,val)]
+            value which might get interpolated
+
+        Returns
+        -------
+        data : np.float
+            value or interpolated value
+        """
+
+        if type(value) != list:
+            return value
+        if len(value) == 0:
+            raise ValueError('value does not contain any values... thats shouldn\'t happen')
+        if type(value[0]) == tuple:
+            # Good thats what we expect and want to interpolate
+            return np.interp(freq, *zip(*value))
 
 # ============================================================================ #
 
@@ -774,11 +804,11 @@ class Attenuator(genericTwoPort):
         Attenuation representation in [dB]
     OP1dB : numpy.float
         Output Signal Compression Point in [dB]
-    OIP3 : numpy.float
+    IIP3 : numpy.float
         Output Signal Intermodulation Point 3 in [dB]
     """
 
-    def __init__(self, name, Att, OP1dB=None, OIP3=None):
+    def __init__(self, name, Att, OP1dB=None, IIP3=None):
         """
         Parameters
         ----------
@@ -788,8 +818,8 @@ class Attenuator(genericTwoPort):
             Attenuation representation in [dB]
         OP1dB : numpy.float
             Output Signal Compression Point in [dB]
-        OIP3 : numpy.float
-            Output Signal Intermodulation Point 3 in [dB]
+        IIP3 : numpy.float
+            Input Signal Intermodulation Point 3 in [dB]
         """
 
         if type(Att) != int:
@@ -797,9 +827,11 @@ class Attenuator(genericTwoPort):
             Att = min(Att)
 
         # Todo : implement checks and conversion to numpy arrays
+        OIP3 = IIP3 - Att if IIP3 is not None else None
         Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
         super().__init__(name, Gain=[(0, -Att)], Tn=Tn, P1=[0, OP1dB], IP3=[0, OIP3])
         self._Att = _Att if type(Att) != int else None
+        self._IIP3 = IIP3
 
         for port in self.ports:
             setattr(port, 'setAttenuation', port.parent.setAttenuation)  # create port attribute and lin parent function to it
@@ -819,6 +851,41 @@ class Attenuator(genericTwoPort):
 
         self.Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
         self.Gain = [(0, -Att)]
+
+        if self._IIP3 is not None:
+            self.IP3 = [0, self._IIP3 - Att]
+
+# ============================================================================ #
+
+
+class Filter(genericTwoPort):
+    """
+    | A filter device.
+
+    Parameters
+    ----------
+    name : str
+        device name
+    Att : list of (f, Att)
+        Attenuation representation in [dB]
+    """
+
+    def __init__(self, name, Att, OP1dB=None):
+        """
+        Parameters
+        ----------
+        name : str
+            device name
+        Att : list of (f, Att)
+            Attenuation representation in [dB]
+        OP1dB : numpy.float
+            Output Signal Compression Point in [dB]
+        """
+
+        Tn = [(f, 10**(att/10) * RFMath.T0 - RFMath.T0) for f, att in Att]
+        Gain = [(f, -att) for f, att in Att]
+        super().__init__(name, Gain=Gain, Tn=[0, Tn], P1=[0, OP1dB], IP3=[0, None])
+
 
 # ============================================================================ #
 
@@ -921,7 +988,7 @@ class SPDT(AbstractDevice):
 
     def calcCurrentEdge(self, start, end, data):
         """
-        | calculates the ouput data values of an spdt device
+        | calculates the output data values of an spdt device
         | only the following values have to calculated inside this function:
 
             - f out
@@ -1006,7 +1073,7 @@ class Mixer(genericTwoPort):
 
     def calcCurrentEdge(self, start, end, data):
         """
-        | calculates the ouput data values of an spdt device
+        | calculates the output data values of an spdt device
         | only the following values have to calculated inside this function:
 
             - f out
