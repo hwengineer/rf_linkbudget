@@ -804,11 +804,11 @@ class Attenuator(genericTwoPort):
         Attenuation representation in [dB]
     OP1dB : numpy.float
         Output Signal Compression Point in [dB]
-    OIP3 : numpy.float
+    IIP3 : numpy.float
         Output Signal Intermodulation Point 3 in [dB]
     """
 
-    def __init__(self, name, Att, OP1dB=None, OIP3=None):
+    def __init__(self, name, Att, OP1dB=None, IIP3=None):
         """
         Parameters
         ----------
@@ -818,8 +818,8 @@ class Attenuator(genericTwoPort):
             Attenuation representation in [dB]
         OP1dB : numpy.float
             Output Signal Compression Point in [dB]
-        OIP3 : numpy.float
-            Output Signal Intermodulation Point 3 in [dB]
+        IIP3 : numpy.float
+            Input Signal Intermodulation Point 3 in [dB]
         """
 
         if type(Att) != int:
@@ -827,9 +827,11 @@ class Attenuator(genericTwoPort):
             Att = min(Att)
 
         # Todo : implement checks and conversion to numpy arrays
+        OIP3 = IIP3 - Att if IIP3 is not None else None
         Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
         super().__init__(name, Gain=[(0, -Att)], Tn=Tn, P1=[0, OP1dB], IP3=[0, OIP3])
         self._Att = _Att if type(Att) != int else None
+        self._IIP3 = IIP3
 
         for port in self.ports:
             setattr(port, 'setAttenuation', port.parent.setAttenuation)  # create port attribute and lin parent function to it
@@ -849,6 +851,7 @@ class Attenuator(genericTwoPort):
 
         self.Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
         self.Gain = [(0, -Att)]
+        self.IP3 = [0, self.IIP3 - Att]
 
 # ============================================================================ #
 

@@ -15,7 +15,7 @@ def example():
 
     lim = rf.Attenuator("Limiter",
                         Att=np.array([0.5, 6.5, 12.5, 18.5]),
-                        OIP3=60,
+                        IIP3=60,
                         OP1dB=30)
 
     sw1 = rf.SPDT("SW 1",
