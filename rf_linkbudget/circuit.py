@@ -851,7 +851,9 @@ class Attenuator(genericTwoPort):
 
         self.Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
         self.Gain = [(0, -Att)]
-        self.IP3 = [0, self.IIP3 - Att]
+
+        if self._IIP3 is not None:
+            self.IP3 = [0, self._IIP3 - Att]
 
 # ============================================================================ #
 
