@@ -292,6 +292,23 @@ As we see in this example, we set the attenuator to 15.6dB for all input powers 
 The function **setAttenuation** will set it to the nearest attenuation value defined in the constructor.
 In this case the zero value will get set to effectively 1.0dB and the 15.6dB will be rounded up to 16.0dB.
 
+
+Filter
+^^^^^^^^^^^^^^
+
+An filter is a classical two port device.
+It has a frequency response
+
+.. code-block:: python
+    :linenos:
+
+    filter = rf.Filter("Filter 1",
+                          Att=[(100, 1.5),(200, 4.5),(300, 55)])
+
+
+As we see, we can define the frequency response like the frequency response of an Amplifier.
+
+
 SPDT
 ^^^^^^^^^^^^^^
 
