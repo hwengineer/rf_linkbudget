@@ -848,7 +848,9 @@ class Attenuator(genericTwoPort):
         Att : numpy.float
             Attenuation representation in [dB]
         """
-        if len(self._Att > 0):
+
+        if len(self._Att) > 0:
+            self._Att = np.array(self._Att)
             Att = self._Att[(np.abs(self._Att - Att)).argmin()]
 
         self.Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
