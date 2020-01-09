@@ -989,7 +989,7 @@ class SPDT(AbstractDevice):
 
         if dir == 1:
             ref.add_edge(self.ports[0], self.ports[1], key=0, weight=1)
-            ref.add_edge(self.ports[1], self.ports[0], key=0, weight=10)
+            ref.add_edge(self.ports[1], self.ports[0], key=0, weight=1)
             ref.add_edge(self.ports[0], self.ports[2], key=0, weight=10)
             ref.add_edge(self.ports[2], self.ports[0], key=0, weight=10)
         elif dir == 2:

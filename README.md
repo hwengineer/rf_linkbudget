@@ -10,10 +10,13 @@ It calculates key parameter’s like cumulative Noise Figure, cumulates Gain, In
 
 ## Changelog
 
+### 1.1.3
+fixed typo in the `setDirection` function of the SPDT switch 
+
 ### 1.1.2
 added more unit tests  
 added more parameter verification  
-`SPDT` Switches now have an Iso parameter for an isolation value 
+`SPDT` Switches now have an Iso parameter for an isolation value
 
 ### 1.1.1
 Updated examples with `Filter` component  

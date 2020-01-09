@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(name='rf-linkbudget',
-                 version='1.1.2',
+                 version='1.1.3',
                  description='A simple rf-linkbudget calculation tool',
                  url='https://github.com/hwengineer/rf_linkbudget',
                  author='Alexander Ott',
