@@ -25,7 +25,7 @@ class VerifyParameterNumList(VerifyParameterType):
     @staticmethod
     def verify(value):
         if type(value) == list:
-            if len(value) >= 1:
+            if len(value) > 1:
                 if type(value[0]) != tuple:
                     return True
         return False

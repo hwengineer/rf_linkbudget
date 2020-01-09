@@ -10,9 +10,11 @@ import copy
 try:
     from .rfmath import RFMath
     from .result import simResult
+    from . import verify
 except ImportError:
     from rfmath import RFMath
     from result import simResult
+    import verify
 
 # ============================================================================
 # Circuit Elements
@@ -881,6 +883,14 @@ class Filter(genericTwoPort):
         OP1dB : numpy.float
             Output Signal Compression Point in [dB]
         """
+
+        if not verify.VerifyParameterNumListOfTuples.verify(Att):
+            raise ValueError('Parameter Att must be in the form [(freq, att), (freq, att)...]')
+        if OP1dB:
+            if verify.VerifyParameterNumListSingleEntry.verify(OP1dB):
+                OP1dB = OP1dB[0]
+            if not verify.VerifyParameterNumSingleValue.verify(OP1dB):
+                raise ValueError('Parameter OP1dB must be in the form: val or [val]')
 
         Tn = [(f, 10**(att/10) * RFMath.T0 - RFMath.T0) for f, att in Att]
         Gain = [(f, -att) for f, att in Att]
