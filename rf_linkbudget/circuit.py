@@ -492,6 +492,31 @@ class AbstractDevice:
         data['DYN'] = RFMath.calc_Dynamic(data['SNR'], data['SFDR'])  # Dynamic
         return data
 
+    def interpolateIfListOfFreqValTuple(self, freq, value):
+        """
+        if value is of the form: [(f,val)] then interpolate, otherwise ignore this function
+
+        Parameters
+        ----------
+        freq : np.float
+            frequency of interest
+        value : float, or [(f,val)]
+            value which might get interpolated
+
+        Returns
+        -------
+        data : np.float
+            value or interpolated value
+        """
+
+        if type(value) != list:
+            return value
+        if len(value) == 0:
+            raise ValueError('value does not contain any values... thats shouldn\'t happen')
+        if type(value[0]) == tuple:
+            # Good thats what we expect and want to interpolate
+            return np.interp(freq, *zip(*value))
+
 # ============================================================================ #
 
 
@@ -645,31 +670,6 @@ class genericTwoPort(AbstractDevice):
 
         else:
             raise ValueError('this should not happen')
-
-    def interpolateIfListOfFreqValTuple(self, freq, value):
-        """
-        if value is of the form: [(f,val)] then interpolate, otherwise ignore this function
-
-        Parameters
-        ----------
-        freq : np.float
-            frequency of interest
-        value : float, or [(f,val)]
-            value which might get interpolated
-
-        Returns
-        -------
-        data : np.float
-            value or interpolated value
-        """
-
-        if type(value) != list:
-            return value
-        if len(value) == 0:
-            raise ValueError('value does not contain any values... thats shouldn\'t happen')
-        if type(value[0]) == tuple:
-            # Good thats what we expect and want to interpolate
-            return np.interp(freq, *zip(*value))
 
 # ============================================================================ #
 
@@ -914,9 +914,11 @@ class SPDT(AbstractDevice):
         Output Signal Compression Point in [dB]
     OIP3 : numpy.float
         Output Signal Intermodulation Point 3 in [dB]
+    Iso : numpy.float
+        Attenuation in case of "isolation" [dB]
     """
 
-    def __init__(self, name, Att, OP1dB=None, OIP3=None):
+    def __init__(self, name, Att, OP1dB=None, OIP3=None, Iso=999):
         """
         Parameters
         ----------
@@ -928,10 +930,12 @@ class SPDT(AbstractDevice):
             Output Signal Compression Point in [dB]
         OIP3 : numpy.float
             Output Signal Intermodulation Point 3 in [dB]
+        Iso : numpy.float
+            Attenuation in case of "isolation" [dB]
         """
         Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
 
-        super().__init__(name, 3, Gain=[(0, -Att)], Tn=Tn, P1=[0, OP1dB, OP1dB], IP3=[0, OIP3, OIP3])
+        super().__init__(name, 3, Gain=[(0, -Att)], Tn=Tn, P1=[0, OP1dB, OP1dB], IP3=[0, OIP3, OIP3], Iso=Iso)
         self._portkey = {'S': 0, 'S-1': 1, 'S-2': 2}
         self.net.add_nodes_from([port for port in self.ports])
         [self.net.add_edge(self.ports[0], port, weight=0) for port in self.ports[1:]]
@@ -1024,7 +1028,13 @@ class SPDT(AbstractDevice):
         """
         out = dict(data)                                              # copy input values to output (as good defaults)
 
-        Gain = np.interp(data['f'], *zip(*self.Gain))                 # interpolate Gain value
+        if Circuit.currentNet.get_edge_data(start, end)[0]['weight'] > 1:
+            # here we have the case with a switch in isolation state
+            iso = self.interpolateIfListOfFreqValTuple(data['f'], self.Iso)
+            Gain = -iso
+        else:
+            Gain = self.interpolateIfListOfFreqValTuple(data['f'], self.Gain)  # interpolate Gain value
+
         out['Gain'] = data['Gain'] + Gain                             # calc cumulative Gain
         out['Tn'] = RFMath.calc_Tn(data['Tn'], self.Tn[1], Gain)      # calc output NoiseTemperature
         out['p'] = RFMath.calc_Pout(data['p'], Gain)                  # calc output signal power

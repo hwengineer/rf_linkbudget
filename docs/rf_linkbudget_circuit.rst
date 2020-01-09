@@ -340,6 +340,15 @@ Has ports 'S', 'S-1', 'S-2'
       sw1['S'].regCallback(cb_sw1)
       sw2['S'].regCallback(cb_sw1)
 
+We can also specify the isolation in case of a malconfigured switch
+
+.. code-block:: python
+    :linenos:
+
+    sw1 = rf.SPDT("SW 1",
+                    Att=0.3, Iso=60)
+    ...
+
 Mixer
 ^^^^^^^^^^^^^^
 

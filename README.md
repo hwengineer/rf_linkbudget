@@ -10,12 +10,17 @@ It calculates key parameter’s like cumulative Noise Figure, cumulates Gain, In
 
 ## Changelog
 
+### 1.1.2
+added more unit tests  
+added more parameter verification  
+`SPDT` Switches now have an Iso parameter for an isolation value 
+
 ### 1.1.1
-Updated examples with `Filter` component
+Updated examples with `Filter` component  
 added first bunch of unittests
 
 ### 1.1.0
-Changed Attenuator OIP3 to IIP3 value.
+Changed Attenuator OIP3 to IIP3 value.  
 This change breaks old scripts!
 
 ### 1.0.2
