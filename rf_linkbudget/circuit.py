@@ -899,7 +899,7 @@ class Filter(genericTwoPort):
         super().__init__(name, Gain=Gain, Tn=[0, Tn], P1=[0, OP1dB], IP3=[0, None])
 
     @classmethod
-    def fromSParamFile(cls, name, filename, OP1dB, OIP3, patchString='S12DB'):
+    def fromSParamFile(cls, name, filename, OP1dB=None, patchString='S12DB'):
         """
         | classmethod to create a filter device from a Touchstone S2P file
         | only S21 is regarded
@@ -932,7 +932,7 @@ class Filter(genericTwoPort):
 
         Att = [(f, -s21) for f, s21 in zip(sparam['frequency'], sparam[patchString])]
 
-        return cls(name, Att=Att, OP1dB=OP1dB, OIP3=OIP3)
+        return cls(name, Att=Att, OP1dB=OP1dB)
 
 
 # ============================================================================ #
