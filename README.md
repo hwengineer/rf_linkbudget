@@ -10,8 +10,11 @@ It calculates key parameter’s like cumulative Noise Figure, cumulates Gain, In
 
 ## Changelog
 
+### 1.1.4
+added feature to use current simulation parameters in a callback function for a switch or attenuator 
+
 ### 1.1.3
-fixed typo in the `setDirection` function of the SPDT switch 
+fixed typo in the `setDirection` function of the SPDT switch
 
 ### 1.1.2
 added more unit tests  
