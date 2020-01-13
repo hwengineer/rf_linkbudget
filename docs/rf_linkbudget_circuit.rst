@@ -140,6 +140,20 @@ The Callback gets called just before calulating the input / output values of a d
 And the second callback **regCallback_preIteration** is used to define settings for each iteration before calculating the individual device parameters.
 With this callback we can define system settings like if a mixer is an up- or downconverter, the mixer frequency and the noisefigure of the device depending on the LO frequency or power level.
 
+We can refence inside the callback function to a temporary variable called **Circuit.currentSimParams**.
+Inside this variable all currently set Simulation Parameters are availlable.
+
+.. code-block:: python
+    :linenos:
+
+    # create callback function
+    def cb_att1(self, f, p):
+        ...
+        freq = Circuit.currentSimParams['freq']
+        start_node = Circuit.currentSimParams['start']
+        ...
+
+We can use this feature to simulate more complex control schemes.
 
 Devices
 -------
