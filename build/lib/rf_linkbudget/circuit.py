@@ -226,6 +226,11 @@ class Circuit:
     Networkx : temporary callback reference for the current used network in a simulation. Only used in the function Circuit._simulate(...)
     """
 
+    currentSimParams = None
+    """
+    temporary callback reference for the current used parameters in a simulation. Only used in the function Circuit._simulate(...)
+    """
+
     def register(child):
         """
         A function to register an AbstractDevice to the currently active Circuit
@@ -325,7 +330,7 @@ class Circuit:
         if type(start) != Port:
             start = start['out']  # assume the out port
         if type(end) != Port:
-            end = end['out']  # assume the in port
+            end = end['in']  # assume the in port
 
         net = OrderedDict([(x, OrderedDict([(y, 0) for y in power])) for x in freq])  # initialise nested OrderedDict
         data = OrderedDict([(x, OrderedDict([(y, 0) for y in power])) for x in freq])
@@ -362,6 +367,7 @@ class Circuit:
         # 1) copy network and initialize working copy
         net = network.copy()
         Circuit.currentNet = net  # make a callback reference
+        Circuit.currentSimParams = {'start': start, 'end': end, 'freq': freq, 'power': power}
 
         # 2) get all path related classes and call _callback_preSimulation before calc path
         [p._callback_preSimulation(freq, power) for p in net.nodes if hasattr(p.parent, 'updatePath')]
@@ -388,6 +394,7 @@ class Circuit:
                 data[e] = data[s]  # copy data from one port to another, because its a wire...
 
         Circuit.currentNet = None  # clear callback reference
+        Circuit.currentSimParams = None
         return (network, data)
 
 # ============================================================================
@@ -848,7 +855,9 @@ class Attenuator(genericTwoPort):
         Att : numpy.float
             Attenuation representation in [dB]
         """
-        if len(self._Att > 0):
+
+        if len(self._Att) > 0:
+            self._Att = np.array(self._Att)
             Att = self._Att[(np.abs(self._Att - Att)).argmin()]
 
         self.Tn = [0, 10**(Att/10) * RFMath.T0 - RFMath.T0]
@@ -895,6 +904,40 @@ class Filter(genericTwoPort):
         Tn = [(f, 10**(att/10) * RFMath.T0 - RFMath.T0) for f, att in Att]
         Gain = [(f, -att) for f, att in Att]
         super().__init__(name, Gain=Gain, Tn=[0, Tn], P1=[0, OP1dB], IP3=[0, None])
+
+    @classmethod
+    def fromSParamFile(cls, name, filename, OP1dB=None, patchString='S12DB'):
+        """
+        | classmethod to create a filter device from a Touchstone S2P file
+        | only S21 is regarded
+
+        Parameters
+        ----------
+        name : str
+            device name
+        filename : str
+            S2P filename
+        OP1dB : numpy.float
+            Output Signal Compression Point of object in [dB]
+
+        Other Parameters
+        ----------------
+        patchString : str
+            default 'S12DB'
+
+        Returns
+        -------
+        cls : genericTwoPort
+            object
+        """
+        import skrf as rf
+
+        sparam = rf.touchstone.Touchstone(filename)
+        sparam = sparam.get_sparameter_data(format='db')
+
+        Att = [(f, -s21) for f, s21 in zip(sparam['frequency'], sparam[patchString])]
+
+        return cls(name, Att=Att, OP1dB=OP1dB)
 
 
 # ============================================================================ #

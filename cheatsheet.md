@@ -6,4 +6,5 @@
 3  run github action
 
 ## unittests
-run unittests: `python3 -m unittest test.components`
+run unittests: `python3 -m unittest test.components`  
+`python3 -m unittest test.verifyParameter`
