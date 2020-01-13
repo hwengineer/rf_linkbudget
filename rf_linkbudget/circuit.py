@@ -226,6 +226,11 @@ class Circuit:
     Networkx : temporary callback reference for the current used network in a simulation. Only used in the function Circuit._simulate(...)
     """
 
+    currentSimParams = None
+    """
+    temporary callback reference for the current used parameters in a simulation. Only used in the function Circuit._simulate(...)
+    """
+
     def register(child):
         """
         A function to register an AbstractDevice to the currently active Circuit
@@ -325,7 +330,7 @@ class Circuit:
         if type(start) != Port:
             start = start['out']  # assume the out port
         if type(end) != Port:
-            end = end['out']  # assume the in port
+            end = end['in']  # assume the in port
 
         net = OrderedDict([(x, OrderedDict([(y, 0) for y in power])) for x in freq])  # initialise nested OrderedDict
         data = OrderedDict([(x, OrderedDict([(y, 0) for y in power])) for x in freq])
@@ -362,6 +367,7 @@ class Circuit:
         # 1) copy network and initialize working copy
         net = network.copy()
         Circuit.currentNet = net  # make a callback reference
+        Circuit.currentSimParams = {'start': start, 'end': end, 'freq': freq, 'power': power}
 
         # 2) get all path related classes and call _callback_preSimulation before calc path
         [p._callback_preSimulation(freq, power) for p in net.nodes if hasattr(p.parent, 'updatePath')]
@@ -388,6 +394,7 @@ class Circuit:
                 data[e] = data[s]  # copy data from one port to another, because its a wire...
 
         Circuit.currentNet = None  # clear callback reference
+        Circuit.currentSimParams = None
         return (network, data)
 
 # ============================================================================
@@ -912,8 +919,6 @@ class Filter(genericTwoPort):
             S2P filename
         OP1dB : numpy.float
             Output Signal Compression Point of object in [dB]
-        OIP3 : numpy.float
-            Output Signal Intermodulation Point 3 of object in [dB]
 
         Other Parameters
         ----------------

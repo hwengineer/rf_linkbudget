@@ -232,7 +232,7 @@ class RFMath:
 
     def calc_Tn(Tn_in, Tn, Gain):
         """
-        Calculate ouput noise temperature
+        Calculate output noise temperature
 
         Parameters
         ----------
