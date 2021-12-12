@@ -10,6 +10,10 @@ It calculates key parameter’s like cumulative Noise Figure, cumulates Gain, In
 
 ## Changelog
 
+### 1.1.5
+fixed calculation of Noisefigure value.  
+Also added noise term in signal source in the examples to clearify how to configure them properly 
+
 ### 1.1.4
 added feature to use current simulation parameters in a callback function for a switch or attenuator 
 
