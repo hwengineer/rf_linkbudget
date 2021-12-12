@@ -67,7 +67,7 @@ class RFMath:
         """
         g = 10**(Gain/10)
         Teq = T/g
-        F = Teq/RFMath.T0 + 1
+        F = Teq/RFMath.T0
 
         return 10*np.log10(F)
 
