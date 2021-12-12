@@ -16,7 +16,7 @@ class TestCircuit(unittest.TestCase):
 
         # create callback function
         def cb_src(self, f, p):
-            return {'f': f, 'p': p, 'Tn' : 290}
+            return {'f': f, 'p': p, 'Tn': rf.RFMath.T0}
 
         src['out'].regCallback(cb_src)
 
@@ -55,7 +55,7 @@ class TestCircuit(unittest.TestCase):
 
         # create callback function
         def cb_src(self, f, p):
-            return {'f': f, 'p': p, 'Tn' : 290}
+            return {'f': f, 'p': p, 'Tn': rf.RFMath.T0}
 
         src['out'].regCallback(cb_src)
 
@@ -72,7 +72,36 @@ class TestCircuit(unittest.TestCase):
         assert sim.extractLastValues('n', freq=0, power=0) == (rf.RFMath.N0 +20 +1)
         assert np.round(sim.extractLastValues('NF', freq=0, power=0),decimals=4) == 1
 
+    def test_Attenuator10dB(self):
 
+        cr = rf.Circuit('Example')
+        src = rf.Source("Source")
+        att = rf.Attenuator("Attenuator",
+                        Att=np.array([10])
+                        )
+        sink = rf.Sink("Sink")
+
+        src['out'] >> att['in']
+        att['out'] >> sink['in']
+
+        # create callback function
+        def cb_src(self, f, p):
+            return {'f': f, 'p': p, 'Tn': rf.RFMath.T0}
+
+        src['out'].regCallback(cb_src)
+
+        cr.finalise()
+
+        sim = cr.simulate(network=cr.net,
+                        start=cr['Source'],
+                        end=cr['Sink'],
+                        freq=[0],
+                        power=[0])
+
+        sim.setNoiseBandwidth(1)
+
+        assert sim.extractLastValues('n', freq=0, power=0) == rf.RFMath.N0
+        assert np.round(sim.extractLastValues('NF', freq=0, power=0),decimals=4) == 10
 
 if __name__ == '__main__':
     unittest.main()
