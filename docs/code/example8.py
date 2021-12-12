@@ -122,7 +122,7 @@ if __name__ == "__main__":
     # define circuit
     cr1 = example()
 
-    # simualte
+    # simulate
     sim1 = cr1.simulate(network=cr1.net,
                         start=cr1['Source'],
                         end=cr1['Sink'],
