@@ -27,7 +27,7 @@ drv['out'] >> sink['in']
 
 # create callback function
 def cb_src(self, f, p):
-    return {'f': f, 'p': p}
+    return {'f': f, 'p': p, 'Tn': rf.RFMath.T0}
 
 
 src['out'].regCallback(cb_src)  # connect callback to Port
