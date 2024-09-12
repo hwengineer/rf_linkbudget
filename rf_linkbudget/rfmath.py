@@ -14,11 +14,11 @@ class RFMath:
     search in this class for calculation errors
     """
 
-    T0 = np.float(290)
+    T0 = np.float64(290)
     """
     numpy.float : Noisetemperature at N0
     """
-    N0 = np.float(10*np.log10(constants.k * 290 * 1 * 1000))
+    N0 = np.float64(10*np.log10(constants.k * 290 * 1 * 1000))
     """
     numpy.float : Noisefloor at 25°C and 50R
     """

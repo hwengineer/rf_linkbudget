@@ -13,8 +13,8 @@ In our RF-Math Module there are some constants defined:
 .. code-block:: python
     :linenos:
 
-    T0 = np.float(290)
-    N0 = np.float(10*np.log10(constants.k * 290 * 1 * 1000))
+    T0 = np.float64(290)
+    N0 = np.float64(10*np.log10(constants.k * 290 * 1 * 1000))
 
 Parameter
 -------------------
