@@ -10,6 +10,10 @@ It calculates key parameter’s like cumulative Noise Figure, cumulates Gain, In
 
 ## Changelog
 
+### 1.1.7
+
+Fix deprecated call to `numpy.float`.
+
 ### 1.1.5
 fixed calculation of Noisefigure value.  
 Also added noise term in signal source in the examples to clearify how to configure them properly 
