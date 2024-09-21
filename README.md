@@ -39,3 +39,4 @@ This change breaks old scripts!
 
 ### 1.0.2
 Added `Filter` Component
+
